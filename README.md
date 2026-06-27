@@ -65,8 +65,8 @@ the static frontend and the JSON API; `vercel.json` routes everything to it.
      without it the voice intake falls back to offline heuristics.
 3. **Deploy.** No build settings needed — `requirements.txt` + `vercel.json` are auto-detected.
 
-Files: `vercel.json` (routes `/(.*)` → the function, bundles `app/**`, 60 s max duration),
-`requirements.txt` (flask + anthropic), `api/index.py` (the function).
+Files: `vercel.json` (builds `api/index.py` with `@vercel/python`, bundles `app/**`, routes all
+traffic to it), `requirements.txt` (flask + anthropic + python-dotenv), `api/index.py` (the function).
 
 > Serverless note: sessions are **signed-cookie only** on Vercel (the in-memory revocation registry
 > from `app/server.py` can't be shared across serverless instances), so logout clears the cookie
