@@ -6,6 +6,11 @@ __pycache__/
 # but COMMITTED so Vercel can serve them (output is deterministic — no churn).
 Volunteers_Synthetic.csv
 
+# Secrets — never commit real values (use .env.example as the template)
+.env
+.env.local
+.env.*.local
+
 # OS / editor
 .DS_Store
 Thumbs.db

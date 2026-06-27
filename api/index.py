@@ -16,6 +16,11 @@ import os, json, hashlib
 from flask import Flask, session, request, jsonify, send_from_directory
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # repo root
+try:
+    from dotenv import load_dotenv      # load a local .env if present (optional)
+    load_dotenv(os.path.join(ROOT, ".env"))
+except Exception:
+    pass
 WEB  = os.path.join(ROOT, "app", "web")
 FULL = json.load(open(os.path.join(ROOT, "app", "cases_full.json"), encoding="utf-8"))
 

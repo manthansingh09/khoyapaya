@@ -9,6 +9,11 @@ KhoyaPaya Command Center — Flask server with REAL server-side auth + RBAC.
   STRIPS restricted fields on the server before they ever reach the browser.
 """
 import os, json, hashlib, secrets, webbrowser, threading
+try:
+    from dotenv import load_dotenv      # load a local .env if present (optional)
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
+except Exception:
+    pass
 from flask import Flask, session, request, jsonify, send_from_directory
 
 HERE=os.path.dirname(os.path.abspath(__file__))
