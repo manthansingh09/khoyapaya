@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Khoya-Paya | Kumbh Mela Missing Person Tracing System</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="app">
+
+  <!-- top utility strip -->
+  <div class="gov-strip">
+    <div class="l">
+      <span>🇮🇳 <span data-i18n="gov">Government of India</span></span>
+      <span data-i18n="skip">Skip to Main Content</span>
+    </div>
+    <div class="r">
+      <span class="lang-wrap">🌐 <select class="langSel" aria-label="Language"></select></span>
+      <span class="a11y"><span>A-</span><span>A</span><span>A+</span></span>
+    </div>
+  </div>
+
+  <!-- masthead -->
+  <div class="mast">
+    <div class="emblem" title="State Emblem of India">🛕</div>
+    <div class="title">
+      <div class="hindi" data-i18n="brand_native">खोया-पाया · गुमशुदा व्यक्ति खोज</div>
+      <h1 data-i18n="title_desc">Khoya-Paya — Kumbh Mela Missing Person Tracing System</h1>
+      <div class="org" data-i18n="org">Nashik–Trimbakeshwar Kumbh Mela Authority · Maharashtra Police · Dept. of Disaster Management</div>
+    </div>
+    <div class="seal">
+      <div class="badge-img" title="Satyamev Jayate">⚖️</div>
+      <small data-i18n="seal">An official command &amp; control system for pilgrim safety</small>
+    </div>
+  </div>
+  <div class="tricolor"><i></i><i></i><i></i></div>
+
+  <!-- nav -->
+  <nav class="navbar">
+    <a href="#" class="active" data-i18n="nav_command">Command Center</a>
+    <a href="#" data-i18n="nav_register">Missing Register</a>
+    <a href="#" data-i18n="nav_cctv">CCTV Grid</a>
+    <a href="#" data-i18n="nav_zone">Zone Risk</a>
+    <a href="#" data-i18n="nav_vol">Volunteers</a>
+    <span class="spacer"></span>
+    <button class="navbtn report" id="btn-report">➕ <span data-i18n="btn_report">File New Report</span></button>
+    <button class="navbtn yolo" id="btn-yolo">🎥 CCTV AI: OFF</button>
+    <a class="navbtn login" href="login.html" target="_blank" rel="noopener">🔐 <span data-i18n="btn_login">Staff Login</span></a>
+    <span class="live"><span class="dot"></span> <span data-i18n="live">LIVE OPERATIONS</span></span>
+  </nav>
+
+  <!-- KPI ribbon -->
+  <div class="kpis" id="kpis"></div>
+
+  <div class="main">
+    <!-- LEFT: filters + case list -->
+    <aside class="sidebar">
+      <div class="sec">
+        <h3><span class="ic">🎛️</span> <span data-i18n="sec_filters">Filters</span></h3>
+        <div class="field"><label data-i18n="lbl_search">Search name / case / location</label>
+          <input type="text" id="q" data-i18n-ph="ph_search" placeholder="e.g. Ramkund, Savita, KMP-2027…"/></div>
+        <div class="field"><label data-i18n="lbl_status">Status</label><select id="f-status"></select></div>
+        <div class="field"><label data-i18n="lbl_age">Age band</label><select id="f-age"></select></div>
+        <div class="field"><label data-i18n="lbl_gender">Gender</label><select id="f-gender"></select></div>
+        <div class="field"><label data-i18n="lbl_loc">Last-seen location</label><select id="f-loc"></select></div>
+      </div>
+      <div class="sec">
+        <h3><span class="ic">🗂️</span> <span data-i18n="sec_layers">Map Layers</span></h3>
+        <div class="toggles" id="layers"></div>
+      </div>
+      <div class="sec" style="border-bottom:none;padding-bottom:6px">
+        <h3><span class="ic">📋</span> <span data-i18n="sec_register">Case Register</span> <span class="count" id="caseCount"></span></h3>
+      </div>
+      <div class="caselist" id="caselist"></div>
+    </aside>
+
+    <!-- CENTER: map -->
+    <div style="position:relative">
+      <div id="map"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <!-- RIGHT: command center -->
+    <aside class="cmd" id="cmd">
+      <div class="empty">
+        <div class="big">🧭</div>
+        <div><b data-i18n="cc_select">Select a case</b></div>
+        <p style="font-size:12.5px;line-height:1.6" data-i18n="cc_help">Pick a report from the register or a pin on the
+        map to launch the decision-support workflow — search-radius prediction, CCTV recommendation,
+        nearest response unit, likely route &amp; similar cases.</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- CCTV AI (YOLO) live feed panel -->
+  <div class="yolo-panel" id="yoloPanel">
+    <div class="yolo-head">
+      <span>🎥 CCTV AI · YOLO Auto-Flagging</span>
+      <span class="yolo-stat" id="yoloStat">PAUSED</span>
+      <span class="yolo-x" id="yoloClose">✕</span>
+    </div>
+    <div class="yolo-feed" id="yoloFeed">
+      <div class="yolo-hint">Turn on <b>CCTV AI</b> to stream automatic person-detection flags
+        from the 1,280-camera grid. High-confidence matches are pushed to the response team.</div>
+    </div>
+  </div>
+
+  <!-- Report intake modal -->
+  <div class="modal-bg" id="reportModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div><b>File a Missing-Person Report</b><div class="modal-sub">Intake · auto duplicate-check · auto dispatch</div></div>
+        <span class="modal-x" id="reportClose">✕</span>
+      </div>
+      <div class="modal-body" id="reportBody">
+        <!-- voice agent bar -->
+        <div class="voicebar" id="voicebar">
+          <button class="vbtn ai" id="v-ai">🗣️ <span data-i18n="v_ai">Describe freely (AI)</span></button>
+          <button class="vbtn" id="v-start">🎤 <span data-i18n="v_guide">Voice Guide</span></button>
+          <button class="vbtn stop" id="v-stop" style="display:none">■ <span data-i18n="v_stop">Stop</span></button>
+          <div class="vstatus" id="v-status" data-i18n="v_ready">Press Voice Guide and answer each question.</div>
+          <div class="vmic" id="v-mic">🎙️</div>
+        </div>
+        <div class="vtranscript" id="v-transcript"></div>
+        <div class="frm">
+          <div class="frm-row">
+            <div class="frm-f"><label>Person's name *</label><input type="text" id="r-name" placeholder="Full name"/></div>
+            <div class="frm-f sm"><label>Age band</label><select id="r-age"></select></div>
+            <div class="frm-f sm"><label>Gender</label><select id="r-gender"></select></div>
+          </div>
+          <div class="frm-row">
+            <div class="frm-f"><label>Last seen location *</label><select id="r-loc"></select></div>
+            <div class="frm-f sm"><label>Language</label><input type="text" id="r-lang" placeholder="e.g. Hindi"/></div>
+          </div>
+          <div class="frm-f"><label>Physical description *</label>
+            <textarea id="r-desc" rows="2" placeholder="e.g. Elderly man in saffron kurta, has rudraksha mala, hard of hearing"></textarea></div>
+          <div class="frm-f"><label>Reporter mobile</label><input type="text" id="r-phone" placeholder="+91 …"/></div>
+        </div>
+        <div id="dupZone"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn ghost" id="r-check">🔎 Check Duplicates (Semantic)</button>
+        <button class="btn primary" id="r-file">✅ File &amp; Auto-Dispatch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer class="gov-foot">
+    <div class="links">
+      <a href="#" data-i18n="ft_about">About</a><a href="#" data-i18n="ft_contact">Contact Control Room</a>
+      <a href="#" data-i18n="ft_rti">RTI</a><a href="#" data-i18n="ft_access">Accessibility</a><a href="#" data-i18n="ft_terms">Terms of Use</a>
+      <a href="#" data-i18n="ft_help">Help: 112 / 1363</a>
+    </div>
+    <div data-i18n="ft_owner">Website content owned &amp; managed by Nashik Kumbh Mela Authority · © 2027</div>
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="i18n.js"></script>
+<script src="voice.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

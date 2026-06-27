@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Case Register | Khoya-Paya Staff Portal</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body{overflow:hidden}
+  .portal{display:grid;grid-template-rows:auto auto auto 1fr auto;height:100vh}
+  .ptoolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 16px;
+    background:var(--panel);border-bottom:1px solid var(--line)}
+  .ptoolbar input,.ptoolbar select{border:1px solid var(--line);border-radius:6px;padding:7px 10px;
+    font:inherit;font-size:13px;background:#fff}
+  .ptoolbar .grow{flex:1;min-width:200px}
+  .ptoolbar input:focus,.ptoolbar select:focus{outline:none;border-color:var(--navy)}
+  .role-chip{display:flex;align-items:center;gap:8px;background:#e7f0ff;border:1px solid #c0d4f3;
+    border-radius:20px;padding:5px 13px;font-size:12.5px;color:var(--navy);font-weight:600}
+  .role-chip .lo{cursor:pointer;color:var(--bad);font-weight:700;margin-left:4px}
+  .count-pill{font-size:12px;color:var(--mut)}
+  .btn-exp{background:var(--navy);color:#fff;border:none;border-radius:6px;padding:7px 13px;font-size:13px;
+    font-weight:600;cursor:pointer}.btn-exp:hover{filter:brightness(1.1)}
+  .tablewrap{overflow:auto;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;font-size:12.5px}
+  thead th{position:sticky;top:0;background:var(--navy);color:#fff;text-align:left;padding:9px 11px;
+    white-space:nowrap;cursor:pointer;font-weight:600;z-index:5;border-right:1px solid #1d4fb0}
+  thead th:hover{background:#1746a0}
+  thead th .ar{opacity:.5;font-size:10px;margin-left:3px}
+  tbody td{padding:7px 11px;border-bottom:1px solid var(--line);white-space:nowrap;max-width:340px;
+    overflow:hidden;text-overflow:ellipsis}
+  tbody tr:nth-child(even){background:var(--panel2)}
+  tbody tr:hover{background:#eef5ff}
+  td.desc,td.remarks{white-space:normal;min-width:220px}
+  .masked{color:#b07a1a;font-style:italic;font-size:11px;background:#fdf1dd;padding:1px 7px;border-radius:10px}
+  .empty-row{padding:30px;text-align:center;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="portal">
+  <div class="gov-strip">
+    <div class="l"><span>🇮🇳 <span data-i18n="gov">Government of India</span></span></div>
+    <div class="r">
+      <span class="lang-wrap">🌐 <select class="langSel" aria-label="Language"></select></span>
+      <span data-i18n="pt_restricted">Restricted · Case Register</span>
+    </div>
+  </div>
+  <div class="mast" style="padding:7px 18px">
+    <div class="emblem" style="font-size:26px">🛕</div>
+    <div class="title">
+      <h1 style="font-size:16px" data-i18n="pt_title">Khoya-Paya — Reported Cases Register</h1>
+      <div class="org" data-i18n="pt_org">Nashik–Trimbakeshwar Kumbh Mela Authority · Confidential operational data</div>
+    </div>
+    <div class="seal">
+      <div class="role-chip" id="roleChip"></div>
+      <a href="index.html" style="font-size:12px;margin-left:12px" data-i18n="lbl_map">🗺️ Map</a>
+    </div>
+  </div>
+  <div class="tricolor"><i></i><i></i><i></i></div>
+
+  <div class="ptoolbar">
+    <input class="grow" type="text" id="q" data-i18n-ph="ph_table_search" placeholder="Search any field…"/>
+    <select id="f-status"></select>
+    <select id="f-age"></select>
+    <select id="f-gender"></select>
+    <select id="f-loc"></select>
+    <select id="f-zone"></select>
+    <button id="clear" class="btn-exp" style="background:#6b7890" data-i18n="btn_clear">Clear</button>
+    <button id="export" class="btn-exp" data-i18n="btn_export">⬇ Export CSV</button>
+    <span class="count-pill" id="count"></span>
+  </div>
+
+  <div class="tablewrap" id="tablewrap">
+    <table>
+      <thead id="thead"></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <footer class="gov-foot">
+    <div data-i18n="access_logged">Access is logged. Data shown per role-based access control (RBAC).</div>
+    <div id="who"></div>
+  </footer>
+</div>
+<script src="i18n.js"></script>
+<script src="portal.js"></script>
+</body>
+</html>

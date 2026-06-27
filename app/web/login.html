@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Staff Login | Khoya-Paya Command Center</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body{display:block;overflow:auto}
+  .login-wrap{min-height:100vh;display:flex;flex-direction:column}
+  .login-body{flex:1;display:grid;place-items:center;padding:30px 16px;
+    background:linear-gradient(135deg,#eef2f8,#dfe8f6)}
+  .card{width:430px;max-width:94vw;background:#fff;border-radius:12px;overflow:hidden;
+    box-shadow:0 16px 50px rgba(11,40,90,.18);border-top:4px solid var(--saffron)}
+  .card-head{background:var(--navy);color:#fff;padding:16px 20px}
+  .card-head b{font-size:16px}.card-head div{font-size:12px;color:#cfe0ff;margin-top:2px}
+  .card-body{padding:18px 20px}
+  .roles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:16px}
+  .role{border:1.5px solid var(--line);border-radius:9px;padding:12px 6px;text-align:center;cursor:pointer;
+    transition:.15s;background:var(--panel2)}
+  .role .ic{font-size:24px}.role .nm{font-size:12px;font-weight:600;margin-top:5px;color:var(--ink)}
+  .role.on{border-color:var(--navy);background:#e7f0ff;box-shadow:0 0 0 2px rgba(11,61,145,.15)}
+  .lf label{display:block;font-size:11px;color:var(--mut);font-weight:600;margin:10px 0 4px}
+  .lf input{width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font:inherit;font-size:14px}
+  .lf input:focus{outline:none;border-color:var(--navy)}
+  .signin{width:100%;margin-top:16px;background:var(--green);color:#fff;border:none;border-radius:8px;
+    padding:11px;font-size:15px;font-weight:600;cursor:pointer}
+  .signin:hover{filter:brightness(1.08)}
+  .err{background:#fde7e9;border:1px solid #f3c0c5;color:var(--bad);font-size:12px;padding:8px 11px;
+    border-radius:6px;margin-top:12px;display:none}
+  .err.show{display:block}
+  .demo{margin-top:16px;font-size:11.5px;color:var(--mut);background:var(--panel2);border:1px dashed var(--line);
+    border-radius:7px;padding:10px 12px;line-height:1.7}
+  .demo b{color:var(--navy)}
+  .backlink{display:inline-block;margin-top:14px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="gov-strip">
+    <div class="l"><span>🇮🇳 <span data-i18n="gov">Government of India</span></span></div>
+    <div class="r">
+      <span class="lang-wrap">🌐 <select class="langSel" aria-label="Language"></select></span>
+      <span data-i18n="lg_authonly">Authorised personnel only</span>
+    </div>
+  </div>
+  <div class="mast">
+    <div class="emblem">🛕</div>
+    <div class="title">
+      <div class="hindi" data-i18n="lg_native">खोया-पाया · कर्मचारी लॉगिन</div>
+      <h1 data-i18n="lg_title">Khoya-Paya — Staff &amp; Command Portal Login</h1>
+      <div class="org" data-i18n="org">Nashik–Trimbakeshwar Kumbh Mela Authority</div>
+    </div>
+  </div>
+  <div class="tricolor"><i></i><i></i><i></i></div>
+
+  <div class="login-body">
+    <div class="card">
+      <div class="card-head"><b data-i18n="lg_head">🔐 Secure Sign-In</b><div data-i18n="lg_sub">Select your role and enter the access code</div></div>
+      <div class="card-body">
+        <div class="roles" id="roles">
+          <div class="role on" data-role="admin"><div class="ic">🛡️</div><div class="nm" data-i18n="role_admin">Admin</div></div>
+          <div class="role" data-role="police"><div class="ic">🚓</div><div class="nm" data-i18n="role_police">Police</div></div>
+          <div class="role" data-role="volunteer"><div class="ic">🧑‍🤝‍🧑</div><div class="nm" data-i18n="role_volunteer">Volunteer</div></div>
+        </div>
+        <div class="lf">
+          <label data-i18n="lg_uid">Officer / Staff ID</label>
+          <input type="text" id="uid" placeholder="admin"/>
+          <label data-i18n="lg_pwd">Access code</label>
+          <input type="password" id="pwd" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div class="err" id="err"></div>
+        <button class="signin" onclick="doLogin()" data-i18n="lg_signin">Sign In →</button>
+        <div class="demo">
+          <b data-i18n="lg_demo">Demo credentials</b><br>
+          🛡️ Admin — <b>admin / admin123</b><br>
+          🚓 Police — <b>police / police123</b><br>
+          🧑‍🤝‍🧑 Volunteer — <b>volunteer / volunteer123</b>
+        </div>
+        <a class="backlink" href="index.html" data-i18n="lg_back">← Back to public map</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="i18n.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>
