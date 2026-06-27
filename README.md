@@ -53,6 +53,26 @@ name, age band, gender, last-seen location, language, and description.
 - If the key/SDK is absent, it **falls back** to the offline keyword heuristics.
 - Install the SDK once: `pip install anthropic`.
 
+## Deploy to Vercel
+
+The repo is Vercel-ready — `api/index.py` is a Flask **serverless function** that serves both
+the static frontend and the JSON API; `vercel.json` routes everything to it.
+
+1. Push to GitHub (already done) and **Import** the repo at [vercel.com/new](https://vercel.com/new).
+2. In **Project → Settings → Environment Variables**, add:
+   - `FLASK_SECRET` — any long random string (signs the login session cookie). **Required.**
+   - `ANTHROPIC_API_KEY` — your Anthropic key (enables the 🗣️ Claude free-form extraction). Optional;
+     without it the voice intake falls back to offline heuristics.
+3. **Deploy.** No build settings needed — `requirements.txt` + `vercel.json` are auto-detected.
+
+Files: `vercel.json` (routes `/(.*)` → the function, bundles `app/**`, 60 s max duration),
+`requirements.txt` (flask + anthropic), `api/index.py` (the function).
+
+> Serverless note: sessions are **signed-cookie only** on Vercel (the in-memory revocation registry
+> from `app/server.py` can't be shared across serverless instances), so logout clears the cookie
+> rather than being server-revoked. The generated `app/web/data.json` + `app/cases_full.json` are
+> committed (deterministic output) so nothing is built at request time.
+
 ## Staff login & access control (server-enforced)
 
 Open **🔐 Staff Login** → sign in → role-gated **Case Register** (`/portal.html`).
